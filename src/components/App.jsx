@@ -15,7 +15,6 @@ import { ToastContainer, toast } from "react-toastify";
 import settingsService from "../services/settings.js";
 const Header = lazy(() => import("./Header"));
 const DynamicGridLayout = lazy(() => import("./GridLayout"));
-const DynamicWelcome = lazy(() => import("./Welcome"));
 const DynamicNewWindow = lazy(() => import("react-new-window"));
 import "/node_modules/react-resizable/css/styles.css";
 import "/node_modules/react-grid-layout/css/styles.css";
@@ -102,6 +101,34 @@ function App({ cookies }) {
       martin(channels.map((v) => v.channel));
     }
   }, [channels, martin]);
+
+  const onRemoveChannel = (channel) => {
+    const _channel = channel.toLowerCase();
+    setChannels((c) => reject(c, (value) => value.channel === _channel));
+    channelsSettings.delete(_channel);
+  };
+
+  const onAddChannels = (channelsToAdd) => {
+    const channelsToAddLower = channelsToAdd.map((c) => c.toLowerCase());
+    setChannels((c) => {
+      const existingChannels = c.map((v) => v.channel);
+      const newChannels = channelsToAddLower.filter(
+        (newC) => !existingChannels.includes(newC)
+      );
+      const newChannelObjects = newChannels.map((ch) => ({ channel: ch }));
+      return uniqBy([...c, ...newChannelObjects], "channel");
+    });
+  };
+
+  const onRemoveChannels = (channelsToRemove) => {
+    const channelsToRemoveLower = channelsToRemove.map((c) => c.toLowerCase());
+    setChannels((c) =>
+      reject(c, (value) => channelsToRemoveLower.includes(value.channel))
+    );
+    channelsToRemoveLower.forEach((channel) =>
+      channelsSettings.delete(channel)
+    );
+  };
 
   const martin = useCallback(
     async (channels) => {
@@ -427,6 +454,7 @@ function App({ cookies }) {
       )}
       <Suspense fallback="">
         <Header
+          channels={channels || []}
           isAuth={isAuth}
           user={user}
           saves={saves}
@@ -463,6 +491,9 @@ function App({ cookies }) {
               );
             }
           }}
+          onRemoveChannel={onRemoveChannel}
+          onAddChannels={onAddChannels}
+          onRemoveChannels={onRemoveChannels}
           logout={logout}
         />
       </Suspense>
@@ -477,18 +508,6 @@ function App({ cookies }) {
             onRemoveItem={onRemoveItem}
             channelsSettings={channelsSettings}
             handleSetting={handleSetting}
-          />
-        </Suspense>
-      )}
-      {channels?.length === 0 && (
-        <Suspense fallback="">
-          <DynamicWelcome
-            isAuth={isAuth}
-            user={user}
-            logout={logout}
-            handleWindow={() => {
-              setIsOpened(true);
-            }}
           />
         </Suspense>
       )}

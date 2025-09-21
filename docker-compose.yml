@@ -1,0 +1,11 @@
+services:
+  watch:
+    build: .
+    environment:
+      - TWITCH_CLIENTID=${TWITCH_CLIENTID}
+      - COUNTER_URL=${COUNTER_URL}
+      - COUNTER_ID=${COUNTER_ID}
+      - COUNTER_UTCOFFSET=${COUNTER_UTCOFFSET}
+      - TOUAPI=${TOUAPI}
+    ports:
+      - 8080:80

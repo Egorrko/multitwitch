@@ -1,4 +1,7 @@
 const generateLayout = (channels) => {
+  const aspect_h = (w) => {
+    return w * 6;
+  };
   switch (channels.length) {
     case 1:
       return channels.map((item) => {
@@ -18,7 +21,7 @@ const generateLayout = (channels) => {
     case 2:
       return channels.map((item, i) => {
         const w = 6;
-        const h = 64;
+        const h = aspect_h(w);
         return {
           x: Math.floor(((i * 12) / 2) % 12),
           y: Infinity,
@@ -33,7 +36,7 @@ const generateLayout = (channels) => {
     case 3:
       return channels.map((item, i) => {
         const w = 4;
-        const h = 64;
+        const h = aspect_h(w);
         return {
           x: Math.floor(((i * 12) / 3) % 12),
           y: Infinity,
@@ -48,7 +51,7 @@ const generateLayout = (channels) => {
     case 4:
       return channels.map((item, i) => {
         const w = 6;
-        const h = 33;
+        const h = aspect_h(w);
         return {
           x: Math.floor(((i * 12) / 2) % 12),
           y: Infinity,
@@ -63,22 +66,26 @@ const generateLayout = (channels) => {
     case 5:
       return channels.map((item, i) => {
         if (i >= 2) {
+          const w = 4;
+          const h = aspect_h(w);
           return {
             x: Math.floor(((i * 12) / 3) % 12),
             y: Infinity,
-            w: 4,
-            h: 33,
+            w: w,
+            h: h,
             i: item.channel,
             channel: item.channel,
             chat: false,
             draggableHandle: ".react-grid-dragHandleExample",
           };
         } else {
+          const w = 6;
+          const h = aspect_h(w);
           return {
             x: Math.floor(((i * 12) / 2) % 12),
             y: 0,
-            w: 6,
-            h: 33,
+            w: w,
+            h: h,
             i: item.channel,
             channel: item.channel,
             draggableHandle: ".react-grid-dragHandleExample",
@@ -88,11 +95,13 @@ const generateLayout = (channels) => {
 
     case 6:
       return channels.map((item, i) => {
+        const w = 4;
+        const h = aspect_h(w);
         return {
           x: Math.floor(((i * 12) / 3) % 12),
           y: Infinity,
-          w: 4,
-          h: 33,
+          w: w,
+          h: h,
           i: item.channel,
           channel: item.channel,
           chat: false,

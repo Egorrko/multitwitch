@@ -170,6 +170,7 @@ header:hover .streams {
 }
 .react-grid-layout {
   background: transparent;
+  margin: 15px 0;
 }
 
 .columns {

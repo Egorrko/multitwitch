@@ -23,7 +23,6 @@ import {
 import { faTwitch, faGithub } from "@fortawesome/free-brands-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useTranslation } from "react-i18next";
-const SearchBox = lazy(() => import("./SearchBox"));
 const ChannelTooltip = lazy(() => import("./ToolTipChannel"));
 const SavesTooltip = lazy(() => import("./ToolTipSaves"));
 import ReactTooltip from "react-tooltip";
@@ -32,6 +31,7 @@ import process from "process";
 import { withCookies } from "react-cookie";
 import { useEffect } from "react";
 import useInterval from "use-interval";
+import StreamersList from "./StreamersList";
 
 library.add(
   faTimes,
@@ -68,11 +68,15 @@ function Header({
   handleReset,
   handleAutoSize,
   onAddChannel,
+  onRemoveChannel,
+  onAddChannels,
+  onRemoveChannels,
   setIsCollapse,
   handleWindow,
   cookies,
   logout,
   disabledSave,
+  channels,
 }) {
   const { t } = useTranslation();
   const [streams, setStreams] = useState();
@@ -181,9 +185,8 @@ function Header({
 
   return (
     <CSSTransition in={isCollapse} classNames="header" timeout={300}>
-      <header>
+      <header style={{ display: "flex" }}>
         <nav>
-          <SearchBox onAddChannel={onAddChannel} />
           <button
             onClick={handleSave}
             disabled={disabledSave}
@@ -205,15 +208,6 @@ function Header({
             <FontAwesomeIcon
               icon="magic"
               color={!isAutoSize ? "#cc8686" : ""}
-            />
-          </button>
-          <button
-            onClick={handleCollapse}
-            title={t("collapse-button.title")}
-            className="collapse-btn"
-          >
-            <FontAwesomeIcon
-              icon={isCollapse ? "angle-double-right" : "angle-double-left"}
             />
           </button>
           {isAuth ? (
@@ -322,6 +316,13 @@ function Header({
         <Suspense fallback="">
           <ChannelTooltip FontAwesomeIcon={FontAwesomeIcon} />
         </Suspense>
+        <StreamersList
+          channels={channels}
+          onAddChannel={onAddChannel}
+          onRemoveChannel={onRemoveChannel}
+          onAddChannels={onAddChannels}
+          onRemoveChannels={onRemoveChannels}
+        />
       </header>
     </CSSTransition>
   );
@@ -342,12 +343,16 @@ Header.propTypes = {
   handleSort: PropTypes.func,
   handleAutoSize: PropTypes.func,
   onAddChannel: PropTypes.func,
+  onRemoveChannel: PropTypes.func,
+  onAddChannels: PropTypes.func,
+  onRemoveChannels: PropTypes.func,
   setIsCollapse: PropTypes.func,
   handleWindow: PropTypes.func,
   cookies: PropTypes.any,
   logout: PropTypes.func,
   disabledSave: PropTypes.bool,
   disabledSort: PropTypes.bool,
+  channels: PropTypes.array,
 };
 
 export default withCookies(Header);

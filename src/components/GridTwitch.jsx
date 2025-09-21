@@ -17,7 +17,7 @@ function GridTwitch({
   length,
 }) {
   const [chat, setChat] = useState(
-    channelSettings?.chat ?? layout?.chat ?? true
+    channelSettings?.chat ?? layout?.chat ?? false
   );
   const p = useRef();
   const isMounted = useRef(false);
@@ -25,7 +25,7 @@ function GridTwitch({
   useEffect(() => {
     if (!channelSettings) {
       handleSettings(layout.channel, {
-        chat: layout?.chat ?? true,
+        chat: layout?.chat ?? false,
         quality: layout?.quality ?? "auto",
         muted: layout?.muted ?? false,
       });
