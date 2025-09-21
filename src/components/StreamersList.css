@@ -1,13 +1,15 @@
 .streamers-list {
     display: flex;
     flex-wrap: wrap;
+    gap: 5px;
   }
   
   .streamer-button {
     white-space: nowrap;
   
     color: black;
-    height: auto;
+    height: fit-content;
+    width: fit-content;
     padding: 3px 3px;
     margin: 0 2px;
     border-radius: 5px;
@@ -16,7 +18,6 @@
     cursor: pointer;
     transition: background-color 0.2s;
     text-align: center;
-    width: auto;
   }
   
   .streamer-button:hover {
@@ -26,4 +27,9 @@
   
   .streamer-button.active {
     box-shadow: inset 0 -2px 5px 0 red;
+  }
+
+  .streamers-list p {
+    margin: 0;
+    padding: 0;
   }

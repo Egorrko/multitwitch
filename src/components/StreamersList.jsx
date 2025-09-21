@@ -10,7 +10,7 @@ function StreamersList({
   onAddChannels,
   onRemoveChannels,
 }) {
-  const [streamers, setStreamers] = useState([]);
+  const [streamers, setStreamers] = useState({ simple: [], fl: [] });
 
   useEffect(() => {
     const fetchStreamers = async () => {
@@ -35,22 +35,52 @@ function StreamersList({
   const currentChannelNames = channels.map((c) => c.channel);
 
   const handleEnableAll = () => {
-    const streamersToAdd = streamers
-      .filter((s) => !currentChannelNames.includes(s.nickname.toLowerCase()))
-      .map((s) => s.nickname);
+    const allStreamers = [...streamers.fl, ...streamers.simple];
+    const streamersToAdd = allStreamers
+      .filter(
+        (s) => !currentChannelNames.includes(s.twitch_nickname.toLowerCase())
+      )
+      .map((s) => s.twitch_nickname);
     onAddChannels(streamersToAdd);
   };
 
   const handleDisableAll = () => {
-    const streamersToRemove = streamers
-      .filter((s) => currentChannelNames.includes(s.nickname.toLowerCase()))
-      .map((s) => s.nickname);
+    const allStreamers = [...streamers.fl, ...streamers.simple];
+    const streamersToRemove = allStreamers
+      .filter((s) =>
+        currentChannelNames.includes(s.twitch_nickname.toLowerCase())
+      )
+      .map((s) => s.twitch_nickname);
     onRemoveChannels(streamersToRemove);
+  };
+
+  const renderStreamerList = (list) => {
+    return list.map((streamer) => {
+      const isChannelAdded = currentChannelNames.includes(
+        streamer.twitch_nickname.toLowerCase()
+      );
+
+      return (
+        <button
+          className={
+            isChannelAdded ? "streamer-button active" : "streamer-button"
+          }
+          key={streamer.nickname}
+          onClick={() =>
+            isChannelAdded
+              ? onRemoveChannel(streamer.twitch_nickname)
+              : onAddChannel(streamer.twitch_nickname)
+          }
+        >
+          {streamer.nickname} ({streamer.viewer_count})
+        </button>
+      );
+    });
   };
 
   return (
     <div className="streamers-list">
-      <div className="streamers-list__actions">
+      <div>
         <button onClick={handleEnableAll} className="streamer-button">
           Включить всех
         </button>
@@ -58,28 +88,15 @@ function StreamersList({
           Выключить всех
         </button>
       </div>
-      <div className="streamers-list__buttons">
-        {streamers.map((streamer) => {
-          const isChannelAdded = currentChannelNames.includes(
-            streamer.nickname.toLowerCase()
-          );
-
-          return (
-            <button
-              className={
-                isChannelAdded ? "streamer-button active" : "streamer-button"
-              }
-              key={streamer.nickname}
-              onClick={() =>
-                isChannelAdded
-                  ? onRemoveChannel(streamer.nickname)
-                  : onAddChannel(streamer.nickname)
-              }
-            >
-              {streamer.nickname} ({streamer.viewer_count})
-            </button>
-          );
-        })}
+      <div className="streamers-list">
+        {streamers.fl.length > 0 ? <p>В игре:</p> : <p>В игре: никого 😔</p>}
+        <div className="streamers-list">{renderStreamerList(streamers.fl)}</div>
+      </div>
+      <div className="streamers-list">
+        {streamers.simple.length > 0 ? <p>Не FL:</p> : <p>Не FL: никого 😔</p>}
+        <div className="streamers-list">
+          {renderStreamerList(streamers.simple)}
+        </div>
       </div>
     </div>
   );
