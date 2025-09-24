@@ -187,6 +187,18 @@ function Header({
     <CSSTransition in={isCollapse} classNames="header" timeout={300}>
       <header style={{ display: "flex" }}>
         <nav>
+          <a
+            href="https://freakland.egorrko.ru"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <img
+              src="https://freakland.egorrko.ru/favicon/favicon.svg"
+              alt="logo"
+              width={24}
+              height={24}
+            />
+          </a>
           <button
             onClick={handleSave}
             disabled={disabledSave}
